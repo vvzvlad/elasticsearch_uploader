@@ -21,7 +21,7 @@ function livejournal_dump_uploader.reload_index()
             text = { type = "text", analyzer = "default" },
             title = { type = "text", analyzer = "default", boost = "2.0" },
             user = { type = "keyword" },
-            time = { type = "date", format = "yyyy-MM-dd' 'HH:mm:ss" }, --2014-01-12 23:26:00
+            time = { type = "date", format = "epoch_second||yyyy-MM-dd' 'HH:mm:ss" }, --2014-01-12 23:26:00
             id = { type = "long" },
             post_id = { type = "long" },
             href = { type = "keyword" },
@@ -97,12 +97,35 @@ function livejournal_dump_uploader.upload_posts(path)
    print("End processing \""..index_name.."\"")
 end
 
-function livejournal_dump_uploader.upload_comments(path)
-   --elastic_search.init_bulk(500000)
-   --print("Start processing \""..index_name.."\"")
-   --elastic_search.processing_bulk(msg_data, msg_id)
-   --elastic_search.end_bulk()
-   --print("End processing \""..index_name.."\"")
+function livejournal_dump_uploader.upload_comments(path)elastic_search.init_bulk(500000)
+   print("Start processing \""..index_name.."\"")
+   local all_posts = {}
+   local comment_files_regexp = "evo%-lutio%-(%d+)%-comments%.json"
+   local files_list = system.get_files_in_dir(path, comment_files_regexp)
+   for file_iterator, filename in pairs(files_list) do
+      local file_data = system.read_file(filename)
+      local _, _, entry_number = string.find(filename, comment_files_regexp)
+      local comments = json.decode(file_data)
+      for i, comment in pairs(comments) do
+         if (comment.uname ~= "livejournal" and comment.article ~= nil and all_posts[comment.dtalkid] ~= true) then
+            local new_comment_data = {}
+            new_comment_data.user = comment.dname:gsub("-", "_")
+            new_comment_data.post_id = entry_number
+            new_comment_data.time = comment.ctime_ts
+            new_comment_data.text = comment.article
+            new_comment_data.href = comment.thread_url
+            new_comment_data.title = comment.subject
+            new_comment_data.parent = comment.parent
+            new_comment_data.id = comment.dtalkid
+            new_comment_data.type = "comment"
+            all_posts[comment.dtalkid] = true
+            elastic_search.processing_bulk(new_comment_data, entry_number.."-"..comment.dtalkid)
+         end
+      end
+      print("Processed "..file_iterator.." of "..(#files_list))
+   end
+   elastic_search.end_bulk()
+   print("End processing \""..index_name.."\"")
 end
 
 return livejournal_dump_uploader
