@@ -21,7 +21,7 @@ function livejournal_dump_uploader.reload_index()
             text = { type = "text", analyzer = "default" },
             title = { type = "text", analyzer = "default", boost = "2.0" },
             user = { type = "keyword" },
-            time = { type = "date", format = "epoch_second||YYYY-MM-dd HH:mm:ss" },
+            time = { type = "date", format = "yyyy-MM-dd' 'HH:mm:ss" }, --2014-01-12 23:26:00
             id = { type = "long" },
             post_id = { type = "long" },
             href = { type = "keyword" },
@@ -70,20 +70,39 @@ function livejournal_dump_uploader.reload_index()
 end
 
 
-function livejournal_dump_uploader.upload_posts()
+function livejournal_dump_uploader.upload_posts(path)
    elastic_search.init_bulk(500000)
    print("Start processing \""..index_name.."\"")
-   elastic_search.processing_bulk(msg_data, msg_id)
+   local post_files_regexp = "evo%-lutio%-(%d+)%-content%.json"
+   local files_list = system.get_files_in_dir(path, post_files_regexp)
+   for i, filename in pairs(files_list) do
+      local _, _, number = string.find(filename, post_files_regexp)
+      local file_data = system.read_file(filename)
+      local post = json.decode(file_data)
+      local msg_data = {}
+      msg_data.user = post.user:gsub("-", "_")
+      msg_data.time = post.post_time
+      msg_data.text = post.body
+      msg_data.href = post.href
+      msg_data.title = post.title
+      msg_data.id = post.post_id
+      msg_data.post_id = post.post_id
+      msg_data.tags = system.split_string(post.tags_string, ",")
+      msg_data.links = system.split_string(post.links_string)
+      msg_data.type = "post"
+      elastic_search.processing_bulk(msg_data, number)
+      print("Processed "..i.." of "..(#files_list))
+   end
    elastic_search.end_bulk()
    print("End processing \""..index_name.."\"")
 end
 
-function livejournal_dump_uploader.upload_comments()
-   elastic_search.init_bulk(500000)
-   print("Start processing \""..index_name.."\"")
-   elastic_search.processing_bulk(msg_data, msg_id)
-   elastic_search.end_bulk()
-   print("End processing \""..index_name.."\"")
+function livejournal_dump_uploader.upload_comments(path)
+   --elastic_search.init_bulk(500000)
+   --print("Start processing \""..index_name.."\"")
+   --elastic_search.processing_bulk(msg_data, msg_id)
+   --elastic_search.end_bulk()
+   --print("End processing \""..index_name.."\"")
 end
 
 return livejournal_dump_uploader
