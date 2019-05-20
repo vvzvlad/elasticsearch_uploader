@@ -6,6 +6,6 @@ local print = function(msg, ...) (print_old or print)(system.concatenate_args(ms
 
 livejournal_dump_uploader.init("gkey.vvzvlad.xyz:9200", "evo-lutio")
 livejournal_dump_uploader.reload_index()
-livejournal_dump_uploader.upload_posts("data/livejournal/raw/")
-livejournal_dump_uploader.upload_comments()
+livejournal_dump_uploader.upload_posts("data/livejournal/")
+livejournal_dump_uploader.upload_comments("data/livejournal/")
 
