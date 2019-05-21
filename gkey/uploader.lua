@@ -1,5 +1,5 @@
 #!/usr/bin/env tarantool
-package.path = package.path .. ";../libs/?.lua"
+package.path = package.path .. ";../libs/?.lua" .. ";../es_uploader_processors/?.lua"
 
 local system = require 'system'
 local text_uploader = require "text_uploader"
@@ -40,13 +40,13 @@ text_uploader.upload_text("data/gkey/zk_gav_lang.txt", "ЗК-людское", 10
 --folder_text_uploader.reload_index()
 --folder_text_uploader.upload_folder("data/abs/txt_utf", "txt")
 
-
-livejournal_dump_uploader.init("gkey.vvzvlad.xyz:9200", "haritonov_lj_haritonov")
+local lj_settings = {max_bulk_size = 1*1000*1000}
+livejournal_dump_uploader.init("gkey.vvzvlad.xyz:9200", "haritonov_lj_haritonov", lj_settings)
 livejournal_dump_uploader.reload_index()
 livejournal_dump_uploader.upload_posts("data/livejournal/haritonov")
 livejournal_dump_uploader.upload_comments("data/livejournal/haritonov")
 
-livejournal_dump_uploader.init("gkey.vvzvlad.xyz:9200", "haritonov_lj_krylov")
+livejournal_dump_uploader.init("gkey.vvzvlad.xyz:9200", "haritonov_lj_krylov", lj_settings)
 livejournal_dump_uploader.reload_index()
 livejournal_dump_uploader.upload_posts("data/livejournal/krylov")
 livejournal_dump_uploader.upload_comments("data/livejournal/krylov")

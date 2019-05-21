@@ -8,10 +8,16 @@ local print = function(msg, ...) (print_old or print)(system.concatenate_args(ms
 
 local livejournal_dump_uploader = {}
 local index_name = ""
+local settings = {}
 
-function livejournal_dump_uploader.init(init_server, init_index_name)
+settings.stemmer_override_rules = {"поле => поле"}
+settings.max_bulk_size = 500*1000
+
+function livejournal_dump_uploader.init(init_server, init_index_name, init_settings)
    elastic_search.init(init_server, init_index_name)
    index_name = init_index_name
+   settings.stemmer_override_rules = settings.stemmer_override_rules or init_settings.stemmer_override_rules
+   settings.max_bulk_size = settings.max_bulk_size or init_settings.max_bulk_size
 end
 
 function livejournal_dump_uploader.reload_index()
@@ -39,10 +45,7 @@ function livejournal_dump_uploader.reload_index()
                }
             },
             filter = {
-               no_stem = {
-                  rules = { "поле => поле" },
-                  type = "stemmer_override"
-               },
+               no_stem = { rules = settings.stemmer_override_rules, type = "stemmer_override" },
                ru_stemmer = { language = "russian", type = "stemmer" },
                ru_stop = { stopwords = "_russian_", type = "stop" }
             }
@@ -71,12 +74,12 @@ end
 
 
 function livejournal_dump_uploader.upload_posts(path)
-   elastic_search.init_bulk(5*1000*1000)
+   elastic_search.init_bulk(settings.max_bulk_size)
    print("Start processing \""..index_name.."\"")
    local post_files_regexp = ".-(%d+)%-content%.json"
    local files_list = system.get_files_in_dir(path, post_files_regexp)
    for i, filename in pairs(files_list) do
-      print("Processing "..i.." of "..(#files_list).."( file "..filename.." )")
+      system.print_upd("Processing "..i.." of "..(#files_list).."( file "..filename.." )")
       local _, _, number = string.find(filename, post_files_regexp)
       local file_data = system.read_file(filename)
       local post = json.decode(file_data)
@@ -98,13 +101,13 @@ function livejournal_dump_uploader.upload_posts(path)
 end
 
 function livejournal_dump_uploader.upload_comments(path)
-   elastic_search.init_bulk(5*1000*1000)
+   elastic_search.init_bulk(settings.max_bulk_size)
    print("Start processing \""..index_name.."\"")
    local all_posts = {}
    local comment_files_regexp = ".-(%d+)%-comments%.json"
    local files_list = system.get_files_in_dir(path, comment_files_regexp)
    for file_iterator, filename in pairs(files_list) do
-      print("Processing "..file_iterator.." of "..(#files_list).."( file "..filename.." )")
+      system.print_upd("Processing "..file_iterator.." of "..(#files_list).."( file "..filename.." )")
       local file_data = system.read_file(filename)
       local _, _, entry_number = string.find(filename, comment_files_regexp)
       local comments = json.decode(file_data)
@@ -130,3 +133,4 @@ function livejournal_dump_uploader.upload_comments(path)
 end
 
 return livejournal_dump_uploader
+
