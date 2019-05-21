@@ -26,7 +26,7 @@ function elastic_search.send_request(request, body, path)
    while (repeat_count < 10) do
       local r = http_client:request(request, path, body, opts)
       if (r.status == 429) then
-         local responce_body = json.decode(r.responce_body)
+         local responce_body = json.decode(r.body)
          if (responce_body ~= nil and responce_body.error ~= nil and responce_body.error.type == "circuit_breaking_exception") then
             repeat_count = repeat_count + 1
             print("Error 429(bulk send), sleep")
