@@ -10,7 +10,7 @@ local livejournal_dump_uploader = {}
 local index_name = ""
 local settings = {}
 
-settings.stemmer_override_rules = {""}
+settings.stemmer_override_rules = {"я => я"}
 settings.max_bulk_size = 500*1000
 
 function livejournal_dump_uploader.init(init_server, init_index_name, init_settings)
