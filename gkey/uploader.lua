@@ -3,6 +3,7 @@ package.path = package.path .. ";../libs/?.lua"
 
 local system = require 'system'
 local text_uploader = require "text_uploader"
+local livejournal_dump_uploader = require "livejournal_dump_uploader"
 local folder_text_uploader = require "folder_text_uploader"
 local print_old = print
 local print = function(msg, ...) (print_old or print)(system.concatenate_args(msg, ...)) end
@@ -38,3 +39,14 @@ text_uploader.upload_text("data/gkey/zk_gav_lang.txt", "ЗК-людское", 10
 --folder_text_uploader.init("gkey.vvzvlad.xyz:9200", "abs")
 --folder_text_uploader.reload_index()
 --folder_text_uploader.upload_folder("data/abs/txt_utf", "txt")
+
+
+livejournal_dump_uploader.init("gkey.vvzvlad.xyz:9200", "haritonov_lj_haritonov")
+livejournal_dump_uploader.reload_index()
+livejournal_dump_uploader.upload_posts("data/livejournal/haritonov")
+livejournal_dump_uploader.upload_comments("data/livejournal/haritonov")
+
+livejournal_dump_uploader.init("gkey.vvzvlad.xyz:9200", "haritonov_lj_krylov")
+livejournal_dump_uploader.reload_index()
+livejournal_dump_uploader.upload_posts("data/livejournal/krylov")
+livejournal_dump_uploader.upload_comments("data/livejournal/krylov")
