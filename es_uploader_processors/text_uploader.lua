@@ -55,6 +55,7 @@ function text_uploader.reload_index()
    }
    }
 
+   print("\n\n")
    local result, err, data_r = elastic_search.remove_index()
    if (result == true) then
       print("Index \""..index_name.."\" removed")
@@ -77,7 +78,7 @@ end
 
 function text_uploader.upload_text(filename, book_name)
 
-   print("Start processing \""..filename.."\"")
+   print("\n\nStart processing \""..filename.."\"")
    elastic_search.init_bulk(settings.max_bulk_size)
    local file_data = system.read_file(filename)
 

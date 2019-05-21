@@ -82,7 +82,6 @@ function system.split_text(text, size)
     raw_chunks[raw_chunks_iterator] = current_chunk
     raw_chunks_iterator = raw_chunks_iterator + 1
   end
-  print("Text split: "..raw_chunks_iterator.." chunks")
 
   local processed_chunk_iterator = 1
   local processed_chunks = {""}
@@ -93,8 +92,8 @@ function system.split_text(text, size)
     end
     processed_chunks[processed_chunk_iterator] = (processed_chunks[processed_chunk_iterator] or "")..(current_chunk or "")
   end
-  print("Chunks processed: "..processed_chunk_iterator.." big chunks")
 
+  print("Text split, "..raw_chunks_iterator.." raw chunks converted to "..processed_chunk_iterator.." merged\n")
   return processed_chunks
 end
 

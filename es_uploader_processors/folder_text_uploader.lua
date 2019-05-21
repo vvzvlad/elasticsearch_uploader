@@ -76,7 +76,7 @@ function folder_text_uploader.upload_folder(folder, mask)
    for i, file_name in pairs(files) do
 
       local _, _, name = string.find(file_name, ".+/(.-)%.")
-      print("Processing file "..i.." of "..(#file_name)..", name: "..(name or "no_name"))
+      print("\n\nProcessing file "..i.." of "..(#file_name))
       if (name == nil) then
          print("No parsed book name:", file_name)
          os.exit()
@@ -86,7 +86,7 @@ function folder_text_uploader.upload_folder(folder, mask)
 end
 
 function folder_text_uploader.upload_text(filename, book_name, book_id)
-   print("Start processing \""..filename.."\"", "Name:", book_name)
+   print("Name:", book_name, "("..filename..")")
    elastic_search.init_bulk(settings.max_bulk_size)
    local file_data = system.read_file(filename)
    local max_chunk = 3000
@@ -94,7 +94,7 @@ function folder_text_uploader.upload_text(filename, book_name, book_id)
    local text_chunks = system.split_text(file_data, max_chunk)
 
    for i, text in pairs(text_chunks) do
-      system.print_upd("Processing chunk "..i.." of "..(#text_chunks))
+      system.print_upd("Parse chunk "..i.." of "..(#text_chunks))
       local data = {}
       data.text = text
       data.origin = string.gsub(book_name, " ", "_")
