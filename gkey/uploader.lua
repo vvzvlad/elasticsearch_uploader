@@ -1,5 +1,7 @@
 #!/usr/bin/env tarantool
-local system = require 'libs/system'
+package.path = package.path .. ";../libs/?.lua"
+
+local system = require 'system'
 local text_uploader = require "text_uploader"
 local folder_text_uploader = require "folder_text_uploader"
 local print_old = print

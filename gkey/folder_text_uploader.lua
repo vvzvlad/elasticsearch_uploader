@@ -1,7 +1,7 @@
 #!/usr/bin/env tarantool
 local json = require "json"
-local system = require 'libs/system'
-local elastic_search = require 'libs/elastic_search'
+local system = require 'system'
+local elastic_search = require 'elastic_search'
 
 local print_old = print
 local print = function(msg, ...) (print_old or print)(system.concatenate_args(msg, ...)) end
