@@ -3,6 +3,14 @@ local fio = require 'fio'
 
 local system = {}
 
+function system.print_upd(...)
+  local bytes = {0x1b,0x5b,0x31,0x41, 0x1b,0x5b,0x30,0x4b}
+  for _,i in ipairs(bytes) do
+    io.write(string.char(i))
+  end
+  print(...)
+end
+
 function system.concatenate_args(...)
   local arguments = {...}
   local msg = ""
