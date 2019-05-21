@@ -45,9 +45,9 @@ function telegram_messages_uploader.reload_index()
          }
          },
          filter = {
-         no_stem = { rules = settings.stemmer_override_rules, type = "stemmer_override" },
-         ru_stemmer = { language = "russian", type = "stemmer" },
-         ru_stop = { stopwords = "_russian_", type = "stop" }
+            no_stem = { rules = settings.stemmer_override_rules, type = "stemmer_override" },
+            ru_stemmer = { language = "russian", type = "stemmer" },
+            ru_stop = { stopwords = "_russian_", type = "stop" }
          }
       },
       index = { similarity = { default = { b = 0, type = "BM25" } } },
