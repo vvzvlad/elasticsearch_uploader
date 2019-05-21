@@ -18,10 +18,10 @@ function elastic_search.init(init_server, init_index_name)
 end
 
 
-function elastic_search.send_request(request, body, path)
+function elastic_search.send_request(request, body, sub_path)
    local repeat_count = 0
    local opts = {headers = {['Content-Type'] = 'application/json'}}
-   local path = 'http://'..server..'/'..path
+   local path = 'http://'..server..'/'..sub_path
 
    while (repeat_count < 10) do
       local r = http_client:request(request, path, body, opts)
