@@ -10,14 +10,14 @@ local livejournal_dump_uploader = {}
 local index_name = ""
 local settings = {}
 
-settings.stemmer_override_rules = {"поле => поле"}
+settings.stemmer_override_rules = {""}
 settings.max_bulk_size = 500*1000
 
 function livejournal_dump_uploader.init(init_server, init_index_name, init_settings)
    elastic_search.init(init_server, init_index_name)
    index_name = init_index_name
-   settings.stemmer_override_rules = settings.stemmer_override_rules or init_settings.stemmer_override_rules
-   settings.max_bulk_size = settings.max_bulk_size or init_settings.max_bulk_size
+   settings.stemmer_override_rules = init_settings.stemmer_override_rules or settings.stemmer_override_rules
+   settings.max_bulk_size = init_settings.max_bulk_size or settings.max_bulk_size
 end
 
 function livejournal_dump_uploader.reload_index()

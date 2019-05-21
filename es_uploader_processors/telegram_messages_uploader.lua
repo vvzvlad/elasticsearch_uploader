@@ -8,10 +8,16 @@ local print = function(msg, ...) (print_old or print)(system.concatenate_args(ms
 
 local telegram_messages_uploader = {}
 local index_name = ""
+local settings = {}
 
-function telegram_messages_uploader.init(init_server, init_index_name)
+settings.stemmer_override_rules = {""}
+settings.max_bulk_size = 500*1000
+
+function telegram_messages_uploader.init(init_server, init_index_name, init_settings)
    elastic_search.init(init_server, init_index_name)
    index_name = init_index_name
+   settings.stemmer_override_rules = init_settings.stemmer_override_rules or settings.stemmer_override_rules
+   settings.max_bulk_size = init_settings.max_bulk_size or settings.max_bulk_size
 end
 
 function telegram_messages_uploader.reload_index()
@@ -39,7 +45,7 @@ function telegram_messages_uploader.reload_index()
          }
          },
          filter = {
-         no_stem = { rules = { "поле => поле"}, type = "stemmer_override" },
+         no_stem = { rules = settings.stemmer_override_rules, type = "stemmer_override" },
          ru_stemmer = { language = "russian", type = "stemmer" },
          ru_stop = { stopwords = "_russian_", type = "stop" }
          }
@@ -95,7 +101,7 @@ end
 function telegram_messages_uploader.upload_messages(filename)
    local file_data = system.read_file(filename)
    local messages = json.decode(file_data)
-   elastic_search.init_bulk(500000)
+   elastic_search.init_bulk(settings.max_bulk_size)
    print("Start processing \""..index_name.."\"")
    for i, message in pairs(messages) do
       local msg_data = {}
