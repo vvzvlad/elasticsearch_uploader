@@ -1,12 +1,9 @@
 #!/usr/bin/env tarantool
 package.path = package.path .. ";../libs/?.lua" .. ";../es_uploader_processors/?.lua"
 
-local system = require 'system'
 local text_uploader = require "text_uploader"
 local livejournal_dump_uploader = require "livejournal_dump_uploader"
 local folder_text_uploader = require "folder_text_uploader"
-local print_old = print
-local print = function(msg, ...) (print_old or print)(system.concatenate_args(msg, ...)) end
 
 
 --telegram_messages_uploader.init("gkey.vvzvlad.xyz:9200", "haritonov_tg")
