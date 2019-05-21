@@ -108,6 +108,7 @@ function elastic_search.send_bulk()
 end
 
 function elastic_search.init_bulk(max_messages)
+   print("Bulk init by "..(max_messages/1000).." kb")
    data_bulk = ""
    max_messages_bulk = max_messages
 end
