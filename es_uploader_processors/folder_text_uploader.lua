@@ -76,7 +76,7 @@ function folder_text_uploader.upload_folder(folder, mask)
    for i, file_name in pairs(files) do
 
       local _, _, name = string.find(file_name, ".+/(.-)%.")
-      print("\n\nProcessing file "..i.." of "..(#file_name))
+      print("\n\nProcessing file "..i.." of "..(#files))
       if (name == nil) then
          print("No parsed book name:", file_name)
          os.exit()
