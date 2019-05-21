@@ -12,12 +12,18 @@ local settings = {}
 
 settings.stemmer_override_rules = {"я => я"}
 settings.max_bulk_size = 500*1000
+settings.recreate_index = true
 
 function telegram_messages_uploader.init(init_server, init_index_name, init_settings)
+   init_settings = init_settings or {}
    elastic_search.init(init_server, init_index_name)
    index_name = init_index_name
    settings.stemmer_override_rules = init_settings.stemmer_override_rules or settings.stemmer_override_rules
    settings.max_bulk_size = init_settings.max_bulk_size or settings.max_bulk_size
+   settings.recreate_index = init_settings.recreate_index or settings.recreate_index
+   if (settings.recreate_index == true) then
+      telegram_messages_uploader.reload_index()
+   end
 end
 
 function telegram_messages_uploader.reload_index()
