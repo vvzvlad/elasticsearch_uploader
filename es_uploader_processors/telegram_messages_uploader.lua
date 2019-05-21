@@ -104,6 +104,7 @@ function telegram_messages_uploader.upload_messages(filename)
    elastic_search.init_bulk(settings.max_bulk_size)
    print("Start processing \""..index_name.."\"")
    for i, message in pairs(messages) do
+      system.print_upd("Processing "..i.." of "..(#messages))
       local msg_data = {}
       msg_data.origin = message.from
       msg_data.origin_id = message.from_id
