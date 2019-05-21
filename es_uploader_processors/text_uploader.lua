@@ -8,10 +8,23 @@ local print = function(msg, ...) (print_old or print)(system.concatenate_args(ms
 
 local text_uploader = {}
 local index_name = ""
+local settings = {}
+settings.stemmer_override_rules = {"я => я"}
+settings.max_bulk_size = 500*1000
+settings.max_chunk_size = 3000
+settings.recreate_index = true
 
-function text_uploader.init(init_server, init_index_name)
+function text_uploader.init(init_server, init_index_name, init_settings)
+   init_settings = init_settings or {}
    elastic_search.init(init_server, init_index_name)
    index_name = init_index_name
+   settings.stemmer_override_rules = init_settings.stemmer_override_rules or settings.stemmer_override_rules
+   settings.max_bulk_size = init_settings.max_bulk_size or settings.max_bulk_size
+   settings.max_chunk_size = init_settings.max_chunk_size or settings.max_chunk_size
+   settings.recreate_index = init_settings.recreate_index or settings.recreate_index
+   if (settings.recreate_index == true) then
+      text_uploader.reload_index()
+   end
 end
 
 function text_uploader.reload_index()
@@ -32,7 +45,7 @@ function text_uploader.reload_index()
          }
          },
          filter = {
-         no_stem = { rules = { "поле => поле"}, type = "stemmer_override" },
+         no_stem = { rules = settings.stemmer_override_rules, type = "stemmer_override" },
          ru_stemmer = { language = "russian", type = "stemmer" },
          ru_stop = { stopwords = "_russian_", type = "stop" }
          }
@@ -62,24 +75,20 @@ end
 
 
 
-function text_uploader.upload_text(filename, book_name, book_id, n_flag)
+function text_uploader.upload_text(filename, book_name)
 
    print("Start processing \""..filename.."\"")
-   elastic_search.init_bulk(500000)
+   elastic_search.init_bulk(settings.max_bulk_size)
    local file_data = system.read_file(filename)
-   local max_chunk = 3000
-   if (n_flag == true) then
-      max_chunk = 0
-   end
 
-   local text_chunks = system.split_text(file_data, max_chunk)
+   local text_chunks = system.split_text(file_data, settings.max_chunk_size)
 
    print("Start load \""..index_name.."\"")
    for i, text in pairs(text_chunks) do
       local data = {}
       data.text = text
       data.origin = book_name
-      elastic_search.processing_bulk(data, book_id.."_"..i)
+      elastic_search.processing_bulk(data, book_name.."_"..i)
    end
    elastic_search.end_bulk()
    print("End load \""..index_name.."\"")
