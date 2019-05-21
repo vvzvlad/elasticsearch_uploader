@@ -100,7 +100,7 @@ function elastic_search.send_bulk()
          print("Uploaded(bulk send):", err)
          return
       else
-         print("Error(bulk send)", err, data_r)
+         print("Bulk send error", err, data_r)
          os.exit()
       end
    end
