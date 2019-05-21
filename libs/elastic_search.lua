@@ -94,7 +94,7 @@ end
 function elastic_search.send_bulk()
    local repeat_count = 0
    while (repeat_count < 10) do
-      print("Uploading bulk: ", #data_bulk/1000, "kb...")
+      print("Uploading bulk "..(#data_bulk/1000).."kb...")
       local status, err, data_r = elastic_search.send_bulk_data(data_bulk.."\n")
       if (status == true) then
          print("Uploaded(bulk send):", err)
