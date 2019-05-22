@@ -76,7 +76,7 @@ services:
     networks:
       - elastic
     ports:
-      - 80:9200
+      - 9200:80
     links:
       - elasticsearch:web
 
