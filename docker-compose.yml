@@ -22,7 +22,7 @@ services:
         -Ehttp.cors.allow-origin=*"
     networks:
       - elastic
-    ports:
+#    ports:
 #      - 9200:9200
 #      - 9300:9300
 
