@@ -56,7 +56,7 @@ services:
     depends_on:
       - kibana
     environment:
-      - HTPASSWD=login:{PLAIN}password
+      - HTPASSWD=kibana:{PLAIN}kibana_password
       - FORWARD_PORT=5601
     networks:
       - elastic
@@ -71,7 +71,7 @@ services:
     depends_on:
       - elasticsearch
     environment:
-      - HTPASSWD=login:{PLAIN}password
+      - HTPASSWD=api:{PLAIN}api_password
       - FORWARD_PORT=9200
     networks:
       - elastic
