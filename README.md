@@ -42,4 +42,7 @@ Run crawler:
 perl lj-user-crawler.pl haritonov -y 2001-2019 -m 1-12
 ```
 
+See example lj-crawler/get_*_lj.sh for download many years post parralel (more fast). 
+
 Crawler based on https://github.com/roman-lugovkin/lj-crawler
+
