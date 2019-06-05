@@ -2,7 +2,7 @@
 
 
 ## Install and start ES+Kibana
-Need 2G RAM(i use START1-S in scaleway.com). 
+Need 2G RAM (i use START1-S in scaleway.com). 
 ```bash
 apt update && apt install git -y 
 git clone https://github.com/vvzvlad/es_digital_archeology.git && cd es_digital_archeology
@@ -28,4 +28,18 @@ Open port 80, and use kibana:kibana_password for open kibana panel. Change port 
     links:
       - kibana:web
 ```
-Start at "make docker-daemon" for daemonize and auto-start server.
+Run "make docker-daemon" for daemonize and auto-start server.
+
+
+## Run LJ-crawler
+Install perl libs:
+```
+make perl 
+```
+
+Run crawler:
+```
+perl lj-user-crawler.pl haritonov -y 2001-2019 -m 1-12
+```
+
+Crawler based on https://github.com/roman-lugovkin/lj-crawler
